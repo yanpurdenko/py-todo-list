@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.views import generic
+
+from app.models import Tag
 
 
 def index(request):
@@ -14,5 +17,10 @@ def index(request):
 
     return render(request, "app/index.html", context=context)
 
+
+class TagListView(generic.ListView):
+    model = Tag
+    context_object_name = "tag_list"
+    template_name = "app/tag_list.html"
 
 
