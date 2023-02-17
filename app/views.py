@@ -1,24 +1,34 @@
-from django.shortcuts import render
+import datetime
+
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
+from app.forms import TaskForm, TagForm
 from app.models import Tag, Task
 
 
-def index(request):
-    """View function for the home page of the site."""
+class TaskListView(generic.ListView):
+    model = Task
+    context_object_name = "task_list"
+    template_name = "app/index.html"
+    queryset = Task.objects.prefetch_related("tags")
 
-    num_visits = request.session.get("num_visits", 0)
-    request.session["num_visits"] = num_visits + 1
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TaskListView, self).get_context_data(**kwargs)
 
-    context = {
-        "num_visits": num_visits + 1,
+        context["today_datetime"] = datetime.datetime.now()
 
-    }
+        return context
 
-    return render(request, "app/index.html", context=context)
 
 class TaskCreateView(generic.CreateView):
+    model = Task
+    form_class = TaskForm
+    success_url = reverse_lazy("app:index")
+
+
+class TaskUpdateView(generic.UpdateView):
     model = Task
     form_class = TaskForm
     success_url = reverse_lazy("app:index")
@@ -29,18 +39,43 @@ class TaskDeleteView(generic.DeleteView):
     success_url = reverse_lazy("app:index")
 
 
-class TagCreateView(generic.CreateView):
-    model = Tag
-    form_class = TagForm
-    success_url = reverse_lazy("app:index")
-
-
 class TagListView(generic.ListView):
     model = Tag
     context_object_name = "tag_list"
     template_name = "app/tag_list.html"
 
 
+class TagCreateView(generic.CreateView):
+    model = Tag
+    form_class = TagForm
+    success_url = reverse_lazy("app:tag-list")
+
+
+class TagUpdateView(generic.UpdateView):
+    model = Tag
+    form_class = TagForm
+    success_url = reverse_lazy("app:tag-list")
+
+
 class TagDeleteView(generic.DeleteView):
     model = Tag
-    success_url = reverse_lazy("app:index")
+    success_url = reverse_lazy("app:tag-list")
+
+
+def complete_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == "POST":
+        task.is_done = True
+        task.save()
+        return redirect(reverse_lazy("app:index"))
+    return redirect(reverse_lazy("app:index"))
+
+
+def undo_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+
+    if request.method == "POST":
+        task.is_done = False
+        task.save()
+        return redirect(reverse_lazy("app:index"))
+    return redirect(reverse_lazy("app:index"))
