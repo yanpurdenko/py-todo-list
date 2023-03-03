@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>TODO list</h1>
+    <button style="float: right; bottom: 50px; position: relative" class="btn btn-primary"
+            type="submit"
+            value="submit">
+        <a role="button" style="color: white" href="{% url 'app:task-create' %}">Add task</a>
+    </button>
+    <br>
+
+    {% if task_list %}
+        <div class="overflow-auto task-list">
+            {% for task in task_list %}
+                <div class="form-group">
+                    <b>{{ task.title }}</b>
+
+
+                    {% if task.is_done %}
+                        <b><span class="text-success">Done</span></b>
+                        <form method="post" action="{% url 'app:undo-task' pk=task.id %}">
+                            {% csrf_token %}
+
+                            <button style="float: right" type="submit" class="btn btn-secondary">
+                                Undo
+                            </button>
+
+                        </form>
+
+                    {% else %}
+                        <b><span class="text-danger">Not done</span></b>
+
+                        <form method="post" action="{% url 'app:complete-task' pk=task.id %}">
+                            {% csrf_token %}
+                            <button style="float: right" type="submit" class="btn btn-success">
+                                Complete
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                </div>
+                <div class="form-group">
+                    Created: {{ task.created_at }} {% if task.deadline %}
+                    <span class="text-deadline">Deadline: {{ task.deadline }}</span>
+                {% endif %}
+                </div>
+                <div class="form-group">
+                    <b><span class="text-secondary"> Tags:
+                        {% for tag in task.tags.all %}
+                            {{ tag.name }}
+                        {% endfor %}
+                    </span></b>
+
+
+                    <a href="{% url 'app:task-update' pk=task.id %}">Update</a>
+                    <a href="{% url 'app:task-delete' pk=task.id %}">Delete</a>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <p>There are no tasks in your task list</p>
+    {% endif %}
+
+
+
+{% endblock %}
