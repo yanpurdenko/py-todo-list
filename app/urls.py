@@ -11,8 +11,8 @@ from app.views import (
     TaskCreateView,
     TaskUpdateView,
     TaskDeleteView,
-    complete_task,
-    undo_task,
+    UndoTask,
+    CompleteTask,
 )
 
 urlpatterns = [
@@ -24,8 +24,8 @@ urlpatterns = [
     path("task/create/", TaskCreateView.as_view(), name="task-create"),
     path("task/<int:pk>/update/", TaskUpdateView.as_view(), name="task-update"),
     path("task/<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
-    path("tags/<int:pk>/complete/", complete_task, name="complete-task"),
-    path("tags/<int:pk>/undo/", undo_task, name="undo-task"),
+    path("tags/<int:pk>/complete/", CompleteTask.as_view(), name="complete-task"),
+    path("tags/<int:pk>/undo/", UndoTask.as_view(), name="undo-task"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

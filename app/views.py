@@ -2,7 +2,7 @@ import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 
 from app.forms import TaskForm, TagForm
 from app.models import Tag, Task
@@ -62,20 +62,19 @@ class TagDeleteView(generic.DeleteView):
     success_url = reverse_lazy("app:tag-list")
 
 
-def complete_task(request, pk):
-    task = get_object_or_404(Task, pk=pk)
-    if request.method == "POST":
+class CompleteTask(View):
+
+    def post(self, *args, **kwargs):
+        task = get_object_or_404(Task, pk=kwargs["pk"])
         task.is_done = True
         task.save()
         return redirect(reverse_lazy("app:index"))
-    return redirect(reverse_lazy("app:index"))
 
 
-def undo_task(request, pk):
-    task = get_object_or_404(Task, pk=pk)
+class UndoTask(View):
 
-    if request.method == "POST":
+    def post(self, *args, **kwargs):
+        task = get_object_or_404(Task, pk=kwargs["pk"])
         task.is_done = False
         task.save()
         return redirect(reverse_lazy("app:index"))
-    return redirect(reverse_lazy("app:index"))
