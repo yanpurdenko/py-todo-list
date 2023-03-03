@@ -8,7 +8,7 @@ class Tag(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Task(models.Model):
