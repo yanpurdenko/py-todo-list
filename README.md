@@ -11,6 +11,7 @@ Python3 must be already installed
 
 ```shell
 git clone https://github.com/yanpurdenko/py-todo-list.git
+cd py-todo-list
 python3 -m venv venv
 sourse venv/bin/activate
 pip install -r requirements.txt
