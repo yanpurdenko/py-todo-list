@@ -9,11 +9,11 @@ Python3 must be already installed
 
 ```shell
 git clone https://github.com/yanpurdenko/py-todo-list.git
-git checkout -b develop
 python3 -m venv venv
 sourse venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
+create .env file as .env.sample
 python manage.py runserver
 ```
 
