@@ -7,13 +7,15 @@ Django project where you can manage your tasks
 
 Python3 must be already installed
 
+Сreate .env file as .env.sample
+
 ```shell
 git clone https://github.com/yanpurdenko/py-todo-list.git
+cd py-todo-list
 python3 -m venv venv
 sourse venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
-create .env file as .env.sample
 python manage.py runserver
 ```
 
